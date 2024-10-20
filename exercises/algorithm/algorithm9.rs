@@ -2,10 +2,11 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
+
 
 use std::cmp::Ord;
 use std::default::Default;
+use std::process::id;
 
 pub struct Heap<T>
 where
@@ -38,6 +39,19 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.items.push(value);
+        self.count += 1;
+        
+        let mut idx = self.count;
+        while idx > 1 {
+            let p_idx = self.parent_idx(idx);
+            if (self.comparator)(&self.items[idx], &self.items[p_idx]) {
+                self.items.swap(idx, p_idx);
+                idx = p_idx;
+            } else {
+                break;
+            }
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +72,16 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+		if self.right_child_idx(idx) <= self.count{
+            if (self.comparator)(&self.items[self.left_child_idx(idx)], &self.items[self.right_child_idx(idx)]) {
+                return self.left_child_idx(idx);
+            } else {
+                return self.right_child_idx(idx);
+            }
+        }else if self.left_child_idx(idx) <= self.count {
+            return self.left_child_idx(idx);
+        }
+        idx
     }
 }
 
@@ -85,7 +108,24 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.is_empty() {
+            None
+        }else {
+            self.items.swap(1, self.count);
+            let top = self.items.pop();
+            self.count -= 1;
+
+            let mut idx = 1;
+            while self.children_present(idx) {
+                let child = self.smallest_child_idx(idx);
+                if !(self.comparator)(&self.items[child], &self.items[idx]) {
+                    break;
+                }
+                self.items.swap(idx, child);
+                idx = child;
+            }
+            top
+        }
     }
 }
 

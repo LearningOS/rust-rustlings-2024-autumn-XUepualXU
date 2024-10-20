@@ -3,9 +3,9 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
-use std::fmt::Debug;
+use std::fmt::{Debug, DebugList};
+//use std::intrinsics::caller_location;
 
 
 #[derive(Debug)]
@@ -41,8 +41,7 @@ where
 
 impl<T> BinarySearchTree<T>
 where
-    T: Ord,
-{
+    T: Ord{
 
     fn new() -> Self {
         BinarySearchTree { root: None }
@@ -51,12 +50,24 @@ where
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
         //TODO
+        match &mut self.root {
+            None => self.root = Some(Box::new(TreeNode{
+                value,
+                left: None,
+                right:None,
+            })),
+            Some(node) => node.insert(value)
+        }
+        
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
         //TODO
-        true
+        match &self.root {
+            None => false,
+            Some(ref node) => node.search(value)
+        }
     }
 }
 
@@ -67,6 +78,36 @@ where
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
         //TODO
+        if value < self.value{
+            match &mut self.left {
+                None => self.left = Some(Box::new(TreeNode{
+                    value,
+                    left:None,
+                    right: None,
+                })),
+                Some(ref mut node) => node.insert(value)
+            }
+        }else if value > self.value{
+            match &mut self.right {
+                None => self.right = Some(Box::new(TreeNode{
+                    value,
+                    left:None,
+                    right:None,
+                })),
+                Some(ref mut node) => node.insert(value)
+            }
+        }
+    }
+    fn search(&self, value: T) -> bool{
+        match self.value.cmp(&value) {
+            Ordering::Equal => true,
+            Ordering::Greater => if let Some(ref node) = &self.left{
+                node.search(value)
+            }else{false},
+            Ordering::Less => if let Some(ref node) = &self.right{
+                node.search(value)
+            }else{false}
+        }
     }
 }
 
