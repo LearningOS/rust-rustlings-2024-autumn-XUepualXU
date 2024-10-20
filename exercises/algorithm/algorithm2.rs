@@ -2,13 +2,13 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
 
 #[derive(Debug)]
+#[derive(PartialEq)]
 struct Node<T> {
     val: T,
     next: Option<NonNull<Node<T>>>,
@@ -72,8 +72,22 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn reverse(&mut self){
+	pub fn reverse(&mut self)
+    where Node<T>: PartialEq{
 		// TODO
+        let mut current = self.start;
+        for _ in 0 ..self.length{
+            unsafe {
+                let temp = (*current.unwrap().as_ptr()).prev;
+                (*current.unwrap().as_ptr()).prev = (*current.unwrap().as_ptr()).next;
+                (*current.unwrap().as_ptr()).next = temp;
+                current = (*current.unwrap().as_ptr()).prev;
+            }
+        }
+        let mut temp = self.end;
+        self.end = self.start;
+        self.start = temp;
+        
 	}
 }
 

@@ -2,8 +2,6 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
@@ -70,12 +68,42 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
+	where T: PartialOrd + Copy
+    {
 		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        if list_a.length == 0{
+            list_b
+        }else if list_b.length == 0{
+            list_a
+        }else{
+            let mut list = Self{
+                length : 0,
+                start: None,
+                end: None,
+            };
+            let mut item_a = list_a.start;
+            let mut item_b = list_b.start;
+            unsafe {
+                while !item_a.is_none() && !item_b.is_none(){
+                    if (*item_a.unwrap().as_ptr()).val < (*item_b.unwrap().as_ptr()).val{
+                        list.add((*item_a.unwrap().as_ptr()).val);
+                        item_a = (*item_a.unwrap().as_ptr()).next;
+                    }else{
+                        list.add((*item_b.unwrap().as_ptr()).val);
+                        item_b = (*item_b.unwrap().as_ptr()).next;
+                    }
+                    
+                }
+                while !item_a.is_none(){
+                    list.add((*item_a.unwrap().as_ptr()).val);
+                    item_a = (*item_a.unwrap().as_ptr()).next;
+                }
+                while !item_b.is_none(){
+                    list.add((*item_b.unwrap().as_ptr()).val);
+                    item_b = (*item_b.unwrap().as_ptr()).next;
+                }
+            }
+            list
         }
 	}
 }
